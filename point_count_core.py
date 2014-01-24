@@ -68,7 +68,7 @@ def full_screen_figure():
     fig = plt.figure(figsize=(width, height), dpi=pix2in)
     return fig
 
-def draw_line():
+def draw_line(color='r'):
     """
     interactively draw a line on a pyplot axis
     return the coordinates of the endpoints
@@ -81,7 +81,7 @@ def draw_line():
     y = [p[1] for p in xy]
     ## plot and draw preserving original limits
     limits = ax.axis()
-    line = plt.plot(x,y)
+    line = plt.plot(x, y, color=color)
     ax.axis(limits)
     ax.figure.canvas.draw()
     return xy
@@ -139,7 +139,7 @@ def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
                 xy1, xy2 = draw_line()
                 sizes[ctr,2] = distance(xy1, xy2)
                 if n_axes == 2:
-                    xy3, xy4 = draw_line()
+                    xy3, xy4 = draw_line(color='b')
                     sizes[ctr,3] = distance(xy3, xy4)
                 sizes[ctr,:2] = c, r
             ## ValueError: too many values too unpack (clicked too fast)
@@ -162,17 +162,18 @@ def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
         print('\nFigure saved as %s' % savefig)
     return sizes
     
-def create_save_file_name(root, ext):
+def create_save_file_name(root, ext, add_text='_point_count_'):
+    """create a file name that will not overwrite an existing file"""
     if ext == 'none':
         return None
     root = root.split('.')[0]
-    sfn = root + '_point_count_%i.' % 1 + ext
+    save_file_name = root + add_text + '%i.' % 1 + ext
     for ii in range(2, 1000):
-        if os.path.isfile(sfn):
-            sfn = root + '_point_count_%i.' % ii + ext
+        if os.path.isfile(save_file_name):
+            save_file_name = root + add_text + '%i.' % ii + ext
         else:
             break
-    return sfn
+    return save_file_name
     
 if __name__ == '__main__':
     ## set up argument parser
