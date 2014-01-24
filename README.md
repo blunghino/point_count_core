@@ -1,7 +1,6 @@
-point_count_core
-================
+point_count_core.py
 
-point_count_core.py: Software to make regular manual measurements of grains in an image of sediment
+Software to make regular manual measurements of grains in an image of sediment
 
 dependencies:
     - python 3.x
@@ -17,19 +16,21 @@ python point_count_core.py [-i image_file]
                            [--sf {png,pdf,none}]
                            [--nax {1,2}]
                            [--gs GS]
-
+                     
 optional arguments:
-  -h, --help           show this help message and exit;
-  -i image_file        image file to use;
-  -s {csv,pkl,none}    file type to save to (default="csv");
-  --sf {png,pdf,none}  file type to save figure to (default="png");
-  --nax {1,2}          number of axes to measure for each grain (default=2);
+  -h, --help           show this help message and exit
+  -i image_file        image file to use
+  -s {csv,pkl,none}    file type to save to (default="csv")
+  --sf {png,pdf,none}  file type to save figure to (default="png")
+  --nax {1,2}          number of axes to measure for each grain (default=2)
   --gs GS              grid spacing in pixels (default=100)
   
 Measurements must be made on grid nodes progressing from left to right, top to 
 bottom along the image. At each grid node two measurements are made, for the 
 major axis and the minor axis of the grain. The grid node to be measured is 
-highlighted by a small dot on the grid.
+highlighted by a small dot on the grid. If your first click for a line is 
+misplaced, right click to remove it. You cannot go back and change lines once 
+they have been completed (two clicks).
 
 Grid spacing specifies the distance in pixels between each grid node. 
 The plot window automatically zooms to show the single row of grid nodes that 
