@@ -54,6 +54,7 @@ import argparse
 import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
+from tkinter import filedialog as tkfiledialog
 from PIL import Image
 
 def full_screen_figure():
@@ -192,7 +193,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     ## get image_file if none passed in arguments
     if not args.image_file:
-        args.image_file = tkinter.filedialog.askopenfilename()
+        args.image_file = tkfiledialog.askopenfilename()
     ## open image_file as a PIL Image
     im = Image.open(args.image_file)
     ## create file name to save figure
