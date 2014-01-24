@@ -144,19 +144,13 @@ def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
             ax.figure.canvas.draw()
             ## draw lines and calculate distances
             try:
-                xy1, xy2 = draw_line()
+                xy1, xy2 = draw_line()[:2]
                 sizes[ctr,2] = distance(xy1, xy2)
                 if n_axes == 2:
-                    xy3, xy4 = draw_line(color='b')
+                    xy3, xy4 = draw_line(color='b')[:2]
                     sizes[ctr,3] = distance(xy3, xy4)
                 sizes[ctr,:2] = c, r
-            ## ValueError: too many values too unpack (clicked too fast)
-            except ValueError as e:
-                print('\nValueError: %s' % e)
-                print('(You probably clicked too quickly)')
-                print('\nFailed at %s, %s' % (r, c))
-                return sizes
-            ## Other errors... perhaps from closing the figure window
+            ## ... perhaps from closing the figure window
             except Exception as e:
                 print('\n%s' % e)
                 print('\nFailed at %s, %s' % (r, c))
