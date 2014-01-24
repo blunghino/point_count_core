@@ -211,7 +211,7 @@ if __name__ == '__main__':
         save_file_name = create_save_file_name(args.image_file, args.s)
         ## save as a .pkl file
         if args.s == 'pkl':
-            with open(save_file_name, 'w') as file:
+            with open(save_file_name, 'wb') as file:
                 pickle.dump(sizes, file)
         ## save as a .csv file
         else:
