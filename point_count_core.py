@@ -169,7 +169,7 @@ def create_save_file_name(root, ext):
     sfn = root + '_point_count_%i.' % 1 + ext
     for ii in range(2, 1000):
         if os.path.isfile(sfn):
-            sfn = root + 'point_count_%i.' % ii + ext
+            sfn = root + '_point_count_%i.' % ii + ext
         else:
             break
     return sfn
