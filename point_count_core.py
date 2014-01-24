@@ -30,7 +30,9 @@ optional arguments:
 Measurements must be made on grid nodes progressing from left to right, top to 
 bottom along the image. At each grid node two measurements are made, for the 
 major axis and the minor axis of the grain. The grid node to be measured is 
-highlighted by a small dot on the grid.
+highlighted by a small dot on the grid. If your first click for a line is 
+misplaced, right click to remove it. You cannot go back and change lines once 
+they have been completed (two clicks).
 
 Grid spacing specifies the distance in pixels between each grid node. 
 The plot window automatically zooms to show the single row of grid nodes that 
@@ -45,17 +47,20 @@ Created on Wed Jan 22 15:38:52 2014
 Brent Lunghino
 blunghino@usgs.gov
 """
+
 import os
 import csv
 import pickle
 import tkinter
 import warnings
 import argparse
+from tkinter import filedialog as tkfiledialog
+
 import numpy as np
 import matplotlib as mpl
 from matplotlib import pyplot as plt
-from tkinter import filedialog as tkfiledialog
 from PIL import Image
+
 
 def full_screen_figure():
     """
@@ -67,6 +72,7 @@ def full_screen_figure():
     height = root.winfo_screenheight() / pix2in
     fig = plt.figure(figsize=(width, height), dpi=pix2in)
     return fig
+
 
 def draw_line(color='r'):
     """
@@ -85,11 +91,13 @@ def draw_line(color='r'):
     ax.axis(limits)
     ax.figure.canvas.draw()
     return xy
-        
+ 
+       
 def distance(xy1, xy2):
     """calculate the distance between two points"""
     return np.sqrt((xy2[0]-xy1[0])**2 + (xy2[1]-xy1[1])**2)
-        
+
+       
 def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
     """
     draw lines on image of sediment to point count grains
@@ -123,15 +131,15 @@ def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
     ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=grid_spacing))
     ## display figure and keep running the program
     plt.show(block=False)
-    ## loop through grid nodes
-
+    ## loop over all grid nodes
     ctr = -1
     for r in range(grid_spacing, h_im, grid_spacing):
         ## zoom to current row of nodes
         plt.ylim([r+grid_spacing, r-grid_spacing])
         for c in range(grid_spacing, w_im, grid_spacing):
             ctr += 1
-            htext.set_text('x = %i , y = %i \nnodes remaining = %i' % (c, r, n_nodes-ctr))
+            htext.set_text('x = %i , y = %i \nnodes remaining = %i' 
+                           % (c, r, n_nodes-ctr))
             dot.set_data(c, r)
             ax.figure.canvas.draw()
             ## draw lines and calculate distances
@@ -161,23 +169,38 @@ def pointcount(im, grid_spacing=100, savefig=None, n_axes=2):
         plt.savefig(savefig, dpi=300)
         print('\nFigure saved as %s' % savefig)
     return sizes
+
     
-def create_save_file_name(root, ext, add_text='_point_count_'):
-    """create a file name that will not overwrite an existing file"""
-    if ext == 'none':
-        return None
+def create_save_file_names(root, ext1, ext2, add_text='_point_count_'):
+    """
+    create two file names that are the same except for their extensions 
+    that will not overwrite existing files
+    """
+    ## unique file names cannot be created with the same extensions
+    if ext1 == ext2:
+        return None, None
     root = root.split('.')[0]
-    save_file_name = root + add_text + '%i.' % 1 + ext
+    sfn1 = root + add_text + '%i.' % 1 + ext1
+    sfn2 = root + add_text + '%i.' % 1 + ext2
     for ii in range(2, 1000):
-        if os.path.isfile(save_file_name):
-            save_file_name = root + add_text + '%i.' % ii + ext
+        ## if either proposed file name exists
+        if os.path.isfile(sfn1) or os.path.isfile(sfn2):
+            ## increase the numbering of both by 1
+            sfn1 = root + add_text + '%i.' % ii + ext1
+            sfn2 = root + add_text + '%i.' % ii + ext2
         else:
             break
-    return save_file_name
+    if ext1 == 'none':
+        sfn1 = None
+    if ext2 == 'none':
+        sfn2 = None
+    return sfn1, sfn2
+
     
 if __name__ == '__main__':
     ## set up argument parser
-    parser = argparse.ArgumentParser(description='Software to make regular manual measurements of grains in an image of sediment')
+    parser = argparse.ArgumentParser(description='Software to make regular'+ \
+                      ' manual measurements of grains in an image of sediment')
     parser.add_argument('-i', type=str, dest='image_file', default='',
                         metavar='image_file', help='image file to use')
     parser.add_argument('-s', type=str, default='csv', 
@@ -187,7 +210,7 @@ if __name__ == '__main__':
                         choices=('png', 'pdf', 'none'),
                         help='file type to save figure to (default="png")')
     parser.add_argument('--nax', type=int, default=2, choices=(1, 2),
-                        help='number of axes to measure for each grain (default=2)')
+                   help='number of axes to measure for each grain (default=2)')
     parser.add_argument('--gs', type=int, default=100, 
                         help='grid spacing in pixels (default=100)')
     ## parse arguments
@@ -198,7 +221,8 @@ if __name__ == '__main__':
     ## open image_file as a PIL Image
     im = Image.open(args.image_file)
     ## create file name to save figure
-    save_fig_name = create_save_file_name(args.image_file, args.sf)
+    save_file_name, save_fig_name = create_save_file_names(args.image_file, 
+                                                           args.s, args.sf)
     ## run point count program with MatplotlibDeprecationWarning disabled
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", 
@@ -209,7 +233,6 @@ if __name__ == '__main__':
     if args.s == 'none':
         print('\nData not saved')
     else:
-        save_file_name = create_save_file_name(args.image_file, args.s)
         ## save as a .pkl file
         if args.s == 'pkl':
             with open(save_file_name, 'wb') as file:
@@ -219,9 +242,10 @@ if __name__ == '__main__':
             with open(save_file_name, 'w', newline='') as file:
                 wrtr = csv.writer(file)
                 if args.nax == 2:
-                    wrtr.writerow(['Xlocation_pixels', 'Ylocation_pixels', 'Ax1_pixels', 'Ax2_pixels'])
+                    wrtr.writerow(['Xlocation_pixels', 'Ylocation_pixels', 
+                                   'Ax1_pixels', 'Ax2_pixels'])
                 else:
-                    wrtr.writerow(['Xlocation_pixels', 'Ylocation_pixels', 'Ax1_pixels'])
+                    wrtr.writerow(['Xlocation_pixels', 'Ylocation_pixels', 
+                                   'Ax1_pixels'])
                 wrtr.writerows(sizes)
         print('\nData saved as %s' % save_file_name)                
-        
