@@ -19,9 +19,6 @@ python point_count_core.py [-i image_file]
                            [--nax {1,2}]
                            [--gs GS]
                      
-positional arguments:
-  image_file           image file to use
-
 optional arguments:
   -h, --help           show this help message and exit
   -i image_file        image file to use
