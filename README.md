@@ -19,11 +19,11 @@ python point_count_core.py [-i image_file]
                            [--gs GS]
 
 optional arguments:
-  -h, --help           show this help message and exit
-  -i image_file        image file to use
-  -s {csv,pkl,none}    file type to save to (default="csv")
-  --sf {png,pdf,none}  file type to save figure to (default="png")
-  --nax {1,2}          number of axes to measure for each grain (default=2)
+  -h, --help           show this help message and exit;
+  -i image_file        image file to use;
+  -s {csv,pkl,none}    file type to save to (default="csv");
+  --sf {png,pdf,none}  file type to save figure to (default="png");
+  --nax {1,2}          number of axes to measure for each grain (default=2);
   --gs GS              grid spacing in pixels (default=100)
   
 Measurements must be made on grid nodes progressing from left to right, top to 
