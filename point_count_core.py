@@ -25,7 +25,7 @@ optional arguments:
   -s {csv,pkl,none}    file type to save to (default="csv")
   --sf {png,pdf,none}  file type to save figure to (default="png")
   --nax {1,2}          number of axes to measure for each grain (default=2)
-  --gs GS              grid spacing in pixels (default=100)
+  --gs GS              grid spacing in pixels (default=200)
   
 Measurements must be made on grid nodes progressing from left to right, top to 
 bottom along the image. At each grid node two measurements are made, for the 
@@ -211,8 +211,8 @@ if __name__ == '__main__':
                         help='file type to save figure to (default="png")')
     parser.add_argument('--nax', type=int, default=2, choices=(1, 2),
                    help='number of axes to measure for each grain (default=2)')
-    parser.add_argument('--gs', type=int, default=100, 
-                        help='grid spacing in pixels (default=100)')
+    parser.add_argument('--gs', type=int, default=200, 
+                        help='grid spacing in pixels (default=200)')
     ## parse arguments
     args = parser.parse_args()
     ## get image_file if none passed in arguments
