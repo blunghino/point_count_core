@@ -1,6 +1,7 @@
 point_count_core.py
 
 Software to make regular manual measurements of grains in an image of sediment
+to use to "ground truth" Digital Grain Size software.
 
 dependencies:
     - python 3.x
